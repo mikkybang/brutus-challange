@@ -23,7 +23,6 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const userEmail = localStorage.getItem("user_email");
     const userName = localStorage.getItem("user_name");
 
     return (

@@ -4,6 +4,7 @@ let app = express();
 let router = require('./router');
 let bodyParser = require('body-parser');
 //bodyParser 
+const rateLimit = require("express-rate-limit");
 
 let mongoose = require("mongoose");
 
@@ -29,7 +30,7 @@ mongoose.connection.on('error', (err) => {
 });
 
 // READY?! Let's go!
-
+app.set('trust proxy', 1);
 //Static file declaration
 app.use(express.static(path.join(__dirname, 'client/build')));
 

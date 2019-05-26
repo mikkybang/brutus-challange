@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 
+import PublicIP from 'public-ip'
+
 
 class Login extends Component {
 
@@ -17,6 +19,7 @@ class Login extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.validate = this.validate.bind(this)
+        this.getIp = this.getIp.bind(this)
     }
 
     handleInputChange(e) {
@@ -31,11 +34,12 @@ class Login extends Component {
         const user = {
             email: this.state.email,
             password: this.state.password,
-            errors: {}
         }
         this.validate(user);
         // console.log(user);
     }
+
+
 
     validate(user) {
             axios.post("/login", user).then(
@@ -45,13 +49,29 @@ class Login extends Component {
                     this.props.history.push('/dashboard');
                 } 
             ).catch(err => {
-                console.log(err)
+                this.setState({
+                    errors: {msg: err.response.data,
+                    param: "login"
+                }
+                })
+                console.log(err.response.data)
             })
         }
 
+        async getIp ()  {
+            console.log(await PublicIP.v4());
+            //=> '46.5.21.123'
+         
+            console.log(await PublicIP.v6());
+            //=> 'fe80::200:f8ff:fe21:67cf'
+        };
+
+
+        componentDidMount(){
+            this.getIp()
+        }
 
     render() {
-        const { errors } = this.state
         return (
             <div className="container" style={{ marginTop: '50px', width: '700px' }}>
                 <h2 style={{ marginBottom: '40px' }}>BRUTUS CHALLENGE</h2>
@@ -65,7 +85,6 @@ class Login extends Component {
                             onChange={this.handleInputChange}
                             value={this.state.email}
                         />
-                        {errors.param && (<div className="invalid-feedback">{errors.msg}</div>)}
                     </div>
                     <div className="form-group">
                         <input
@@ -76,7 +95,8 @@ class Login extends Component {
                             onChange={this.handleInputChange}
                             value={this.state.password}
                         />
-                        {errors.param && (<div className="invalid-feedback">{errors.msg}</div>)}
+                        {this.state.errors.param &&  (<div className="alert alert-danger">{this.state.errors.msg}</div>)}
+                        
                     </div>
                     <div className="btn-group btn-group-lg">
                     <div>

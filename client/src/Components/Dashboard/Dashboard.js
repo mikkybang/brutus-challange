@@ -3,7 +3,13 @@ import React from "react";
 class Dashboard extends React.Component {
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      user: {
+        name: localStorage.getItem("user_name"),
+        email: localStorage.getItem("user_email")
+      }
+
+    };
 
     this.logout = this.logout.bind(this);
   }
@@ -15,15 +21,15 @@ class Dashboard extends React.Component {
   }
 
   componentWillMount() {
-    if (!localStorage.getItem("user_email")) {
-      if (!localStorage.getItem("user_name")) {
+    if (!this.state.user.email) {
+      if (!this.state.user.name) {
         this.props.history.push("login");
       }
     }
   }
 
   render() {
-    const userName = localStorage.getItem("user_name");
+    const userName = this.state.user.name;
 
     return (
       <div className="container">
